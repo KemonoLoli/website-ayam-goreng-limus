@@ -47,6 +47,40 @@ class Auth extends CI_Controller
                     // Get konsumen data
                     $konsumen = $this->Konsumen_model->get_by_user_id($user->id_user);
 
+                    // If no konsumen record exists, create one automatically
+                    if (!$konsumen) {
+                        // Check if there's a konsumen with same email/phone that can be linked
+                        $existing = null;
+                        if ($user->email) {
+                            $existing = $this->Konsumen_model->get_by_email($user->email);
+                        }
+                        if (!$existing && $user->no_hp) {
+                            $existing = $this->Konsumen_model->get_by_hp($user->no_hp);
+                        }
+
+                        if ($existing && !$existing->id_user) {
+                            // Link existing konsumen to this user
+                            $this->Konsumen_model->update($existing->id_konsumen, [
+                                'id_user' => $user->id_user,
+                                'tipe' => 'member'
+                            ]);
+                            $konsumen = $this->Konsumen_model->get_by_id($existing->id_konsumen);
+                        } else {
+                            // Create new konsumen record
+                            $konsumen_data = [
+                                'id_user' => $user->id_user,
+                                'nama' => $user->nama_lengkap,
+                                'no_hp' => $user->no_hp,
+                                'email' => $user->email,
+                                'tipe' => 'member',
+                                'poin' => 0,
+                                'total_transaksi' => 0
+                            ];
+                            $id_konsumen = $this->Konsumen_model->create($konsumen_data);
+                            $konsumen = $this->Konsumen_model->get_by_id($id_konsumen);
+                        }
+                    }
+
                     if ($konsumen) {
                         // Set session
                         $this->session->set_userdata([

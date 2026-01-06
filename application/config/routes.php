@@ -59,6 +59,17 @@ $route['order/thanks'] = 'landing/thanks';
 $route['track'] = 'landing/track';
 $route['login'] = 'admin/auth/login';
 
+// Member Routes
+$route['member/login'] = 'member/auth/login';
+$route['member/logout'] = 'member/auth/logout';
+$route['member/dashboard'] = 'member/dashboard/index';
+$route['member/orders'] = 'member/dashboard/orders';
+$route['member/order/(:num)'] = 'member/dashboard/order_detail/$1';
+$route['member/profile'] = 'member/dashboard/profile';
+$route['member/rewards'] = 'member/dashboard/rewards';
+$route['member/claim/(:num)'] = 'member/dashboard/claim_reward/$1';
+$route['member/reorder/(:num)'] = 'member/dashboard/reorder/$1';
+
 
 // Admin Backend Routes
 $route['admin'] = 'admin/dashboard';

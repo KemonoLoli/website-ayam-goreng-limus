@@ -60,6 +60,66 @@
         .cart-sidebar {
             position: sticky;
             top: 80px;
+            align-self: flex-start;
+            max-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-content {
+            flex: 0 1 auto;
+            overflow-y: auto;
+            padding-right: 5px;
+            max-height: calc(100vh - 180px);
+        }
+
+        .sidebar-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .sidebar-footer {
+            padding-top: 10px;
+            flex-shrink: 0;
+        }
+
+        .cart-sidebar .card {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .cart-sidebar .card-header {
+            padding: 0.5rem 1rem !important;
+        }
+
+        .cart-sidebar .card-body {
+            padding: 0.75rem !important;
+        }
+
+        .cart-sidebar .form-label {
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-sidebar .form-control {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .cart-sidebar .mb-3 {
+            margin-bottom: 0.5rem !important;
+        }
+
+        #cartItems {
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        #emptyCart {
+            padding: 0.75rem 0 !important;
         }
 
         .cart-item {
@@ -91,6 +151,58 @@
         .order-type-btn i {
             font-size: 2rem;
             color: var(--primary);
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            position: sticky;
+            top: 56px;
+            z-index: 100;
+            background: #f8f9fa;
+            padding: 10px 0;
+            margin: 0 -12px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .category-nav-inner {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: thin;
+        }
+
+        .category-nav-inner::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .category-nav-inner::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .category-btn {
+            white-space: nowrap;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: #fff;
+            color: #333;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .category-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
         }
     </style>
 </head>
@@ -168,10 +280,24 @@
                         </div>
                     </div>
 
+                    <!-- Category Navigation -->
+                    <div class="category-nav">
+                        <div class="category-nav-inner">
+                            <?php foreach ($categories as $idx => $cat): ?>
+                                <?php if (!empty($cat->items)): ?>
+                                    <button type="button" class="category-btn <?= $idx === 0 ? 'active' : '' ?>"
+                                        onclick="scrollToCategory('category-<?= $cat->id_kategori ?>')">
+                                        <?= $cat->nama_kategori ?>
+                                    </button>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
                     <!-- Menu List by Category -->
                     <?php foreach ($categories as $cat): ?>
                         <?php if (!empty($cat->items)): ?>
-                            <div class="card shadow-sm border-0 mb-3">
+                            <div class="card shadow-sm border-0 mb-3 category-section" id="category-<?= $cat->id_kategori ?>">
                                 <div class="card-header bg-white py-3">
                                     <h6 class="mb-0"><?= $cat->nama_kategori ?></h6>
                                 </div>
@@ -212,110 +338,115 @@
                 <!-- Cart Sidebar -->
                 <div class="col-lg-4">
                     <div class="cart-sidebar">
-                        <div class="card shadow-sm border-0">
-                            <div class="card-header bg-white py-3">
-                                <h6 class="mb-0"><i class="bi bi-cart3 me-2"></i> Keranjang</h6>
-                            </div>
-                            <div class="card-body" id="cartBody">
-                                <p class="text-muted text-center py-4" id="emptyCart">Belum ada item dipilih</p>
-                                <div id="cartItems"></div>
-                                <hr class="d-none" id="cartDivider">
-                                <div class="d-flex justify-content-between fw-bold d-none" id="cartTotal">
-                                    <span>Total</span>
-                                    <span class="text-primary" id="totalAmount">Rp 0</span>
+                        <div class="sidebar-content">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white py-3">
+                                    <h6 class="mb-0"><i class="bi bi-cart3 me-2"></i> Keranjang</h6>
+                                </div>
+                                <div class="card-body" id="cartBody">
+                                    <p class="text-muted text-center py-4" id="emptyCart">Belum ada item dipilih</p>
+                                    <div id="cartItems"></div>
+                                    <hr class="d-none" id="cartDivider">
+                                    <div class="d-flex justify-content-between fw-bold d-none" id="cartTotal">
+                                        <span>Total</span>
+                                        <span class="text-primary" id="totalAmount">Rp 0</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Member Login/Info Section -->
-                        <div class="card shadow-sm border-0 mt-3">
-                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0"><i class="bi bi-person-badge me-2"></i>Akun Member</h6>
-                                <?php if (isset($member) && $member): ?>
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Sudah Login</span>
-                                <?php endif; ?>
-                            </div>
-                            <div class="card-body">
-                                <?php if (isset($member) && $member): ?>
-                                    <!-- Member is logged in -->
-                                    <div class="d-flex align-items-center gap-3 mb-3">
-                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                            style="width: 50px; height: 50px; font-size: 1.2rem;">
-                                            <?= substr($member->nama_lengkap, 0, 1) ?>
+                            <!-- Member Login/Info Section -->
+                            <div class="card shadow-sm border-0 mt-3">
+                                <div
+                                    class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="bi bi-person-badge me-2"></i>Akun Member</h6>
+                                    <?php if (isset($member) && $member): ?>
+                                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Sudah
+                                            Login</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="card-body">
+                                    <?php if (isset($member) && $member): ?>
+                                        <!-- Member is logged in -->
+                                        <div class="d-flex align-items-center gap-3 mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                                <?= substr($member->nama_lengkap, 0, 1) ?>
+                                            </div>
+                                            <div>
+                                                <strong><?= $member->nama_lengkap ?></strong>
+                                                <br><small class="text-muted"><i
+                                                        class="bi bi-star-fill text-warning me-1"></i><?= number_format($konsumen->poin) ?>
+                                                    Poin</small>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <strong><?= $member->nama_lengkap ?></strong>
-                                            <br><small class="text-muted"><i
-                                                    class="bi bi-star-fill text-warning me-1"></i><?= number_format($konsumen->poin) ?>
-                                                Poin</small>
+                                        <div class="alert alert-success py-2 mb-3">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            <strong>Diskon Member <?= $member_discount ?>%</strong> akan diterapkan
+                                            otomatis!
                                         </div>
-                                    </div>
-                                    <div class="alert alert-success py-2 mb-3">
-                                        <i class="bi bi-check-circle me-1"></i>
-                                        <strong>Diskon Member <?= $member_discount ?>%</strong> akan diterapkan otomatis!
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <a href="<?= site_url('member/dashboard') ?>"
-                                            class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                        <div class="d-flex gap-2">
+                                            <a href="<?= site_url('member/dashboard') ?>"
+                                                class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                            </a>
+                                            <a href="<?= site_url('member/logout') ?>"
+                                                class="btn btn-outline-secondary btn-sm">
+                                                <i class="bi bi-box-arrow-right me-1"></i>Logout
+                                            </a>
+                                        </div>
+                                    <?php else: ?>
+                                        <!-- Not logged in -->
+                                        <p class="text-muted mb-2 small">Login untuk diskon & poin!</p>
+                                        <a href="<?= site_url('member/login') ?>"
+                                            class="btn btn-outline-primary btn-sm w-100"
+                                            onclick="localStorage.setItem('redirect_after_login', window.location.href);">
+                                            <i class="bi bi-box-arrow-in-right me-1"></i>Login Member
                                         </a>
-                                        <a href="<?= site_url('member/logout') ?>" class="btn btn-outline-secondary btn-sm">
-                                            <i class="bi bi-box-arrow-right me-1"></i>Logout
-                                        </a>
-                                    </div>
-                                <?php else: ?>
-                                    <!-- Not logged in -->
-                                    <p class="text-muted mb-3">Login sebagai member untuk mendapatkan diskon dan kumpulkan
-                                        poin!</p>
-                                    <a href="<?= site_url('member/login') ?>" class="btn btn-outline-primary w-100"
-                                        onclick="localStorage.setItem('redirect_after_login', window.location.href);">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i>Login Member
-                                    </a>
-                                    <div class="text-center mt-2">
-                                        <small class="text-muted">Atau lanjutkan pesan sebagai tamu</small>
-                                    </div>
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Customer Info -->
-                        <div class="card shadow-sm border-0 mt-3">
-                            <div class="card-header bg-white py-3">
-                                <h6 class="mb-0"><i class="bi bi-person me-2"></i>Info Pemesan</h6>
+                            <!-- Customer Info -->
+                            <div class="card shadow-sm border-0 mt-3">
+                                <div class="card-header bg-white py-3">
+                                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Info Pemesan</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nama</label>
+                                        <input type="text" class="form-control" name="nama" required
+                                            value="<?= isset($konsumen) && $konsumen ? $konsumen->nama : '' ?>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">No. HP / WhatsApp</label>
+                                        <input type="tel" class="form-control" name="hp" placeholder="08xxx" required
+                                            value="<?= isset($konsumen) && $konsumen ? $konsumen->no_hp : '' ?>">
+                                    </div>
+                                    <div class="mb-3" id="mejaField">
+                                        <label class="form-label">Nomor Meja</label>
+                                        <input type="text" class="form-control" name="meja" placeholder="1, 2, 3...">
+                                    </div>
+                                    <div class="mb-3 d-none" id="alamatField">
+                                        <label class="form-label">Alamat Pengiriman</label>
+                                        <textarea class="form-control" name="alamat"
+                                            rows="2"><?= isset($konsumen) && $konsumen ? $konsumen->alamat : '' ?></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Catatan (opsional)</label>
+                                        <textarea class="form-control" name="catatan" rows="2"
+                                            placeholder="Sambal terpisah, tidak pedas, dll"></textarea>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Nama</label>
-                                    <input type="text" class="form-control" name="nama" required
-                                        value="<?= isset($konsumen) && $konsumen ? $konsumen->nama : '' ?>">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">No. HP / WhatsApp</label>
-                                    <input type="tel" class="form-control" name="hp" placeholder="08xxx" required
-                                        value="<?= isset($konsumen) && $konsumen ? $konsumen->no_hp : '' ?>">
-                                </div>
-                                <div class="mb-3" id="mejaField">
-                                    <label class="form-label">Nomor Meja</label>
-                                    <input type="text" class="form-control" name="meja" placeholder="1, 2, 3...">
-                                </div>
-                                <div class="mb-3 d-none" id="alamatField">
-                                    <label class="form-label">Alamat Pengiriman</label>
-                                    <textarea class="form-control" name="alamat"
-                                        rows="2"><?= isset($konsumen) && $konsumen ? $konsumen->alamat : '' ?></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Catatan (opsional)</label>
-                                    <textarea class="form-control" name="catatan" rows="2"
-                                        placeholder="Sambal terpisah, tidak pedas, dll"></textarea>
-                                </div>
-                            </div>
-                        </div>
+                        </div><!-- End sidebar-content -->
 
-                        <!-- Submit Button -->
-                        <button type="button" class="btn btn-primary btn-lg w-100 mt-3" id="submitBtn" disabled
-                            onclick="showPaymentModal()">
-                            <i class="bi bi-check-circle me-2"></i> Kirim Pesanan
-                        </button>
+                        <!-- Submit Button - Always Visible -->
+                        <div class="sidebar-footer">
+                            <button type="button" class="btn btn-primary btn-lg w-100" id="submitBtn" disabled
+                                onclick="showPaymentModal()">
+                                <i class="bi bi-check-circle me-2"></i> Kirim Pesanan
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -509,6 +640,47 @@
             paymentModal.hide();
             document.getElementById('orderForm').submit();
         }
+
+        // Category Navigation
+        function scrollToCategory(categoryId) {
+            const element = document.getElementById(categoryId);
+            if (element) {
+                const navHeight = 120; // Account for navbar and category nav
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                window.scrollTo({
+                    top: elementPosition - navHeight,
+                    behavior: 'smooth'
+                });
+
+                // Update active button
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[onclick="scrollToCategory('${categoryId}')"]`).classList.add('active');
+            }
+        }
+
+        // Highlight active category on scroll
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('.category-section');
+            const navButtons = document.querySelectorAll('.category-btn');
+
+            if (sections.length > 0) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const categoryId = entry.target.id;
+                            navButtons.forEach(btn => btn.classList.remove('active'));
+                            const activeBtn = document.querySelector(`[onclick="scrollToCategory('${categoryId}')"]`);
+                            if (activeBtn) activeBtn.classList.add('active');
+                        }
+                    });
+                }, {
+                    rootMargin: '-120px 0px -50% 0px',
+                    threshold: 0
+                });
+
+                sections.forEach(section => observer.observe(section));
+            }
+        });
     </script>
 </body>
 

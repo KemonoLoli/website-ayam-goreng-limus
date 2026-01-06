@@ -216,8 +216,21 @@
 
       <?php if ($this->session->userdata('user_id')): ?>
         <a class="btn-getstarted d-none d-sm-block" href="<?= site_url('admin/dashboard') ?>">Dashboard</a>
+      <?php elseif ($this->session->userdata('member_id')): ?>
+        <a class="btn-getstarted d-none d-sm-block" href="<?= site_url('member/dashboard') ?>">Member Area</a>
       <?php else: ?>
-        <a class="btn-getstarted d-none d-sm-block" href="<?= site_url('admin/login') ?>">Log In</a>
+        <div class="dropdown d-none d-sm-block">
+          <a class="btn-getstarted dropdown-toggle" href="#" data-bs-toggle="dropdown">Log In</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="<?= site_url('member/login') ?>"><i class="bi bi-person me-2"></i>Login
+                Member</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="<?= site_url('admin/login') ?>"><i class="bi bi-shield-lock me-2"></i>Login
+                Staff</a></li>
+          </ul>
+        </div>
       <?php endif; ?>
 
     </div>
