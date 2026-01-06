@@ -84,6 +84,20 @@
                             <span class="fw-semibold">Total:</span>
                             <span class="text-primary fw-bold">Rp<?= number_format($order_total, 0, ',', '.') ?></span>
                         </p>
+                        <?php if (!empty($order_discount) && $order_discount > 0): ?>
+                            <p class="mb-0 text-success small">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Diskon Member: -Rp<?= number_format($order_discount, 0, ',', '.') ?>
+                            </p>
+                        <?php endif; ?>
+                        <?php if (!empty($poin_earned) && $poin_earned > 0): ?>
+                            <div class="mt-3 pt-3 border-top">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-star-fill me-1"></i>+<?= number_format($poin_earned) ?> Poin
+                                </span>
+                                <p class="small text-muted mb-0 mt-1">Poin berhasil ditambahkan ke akun Anda</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="alert alert-info text-start mb-4">

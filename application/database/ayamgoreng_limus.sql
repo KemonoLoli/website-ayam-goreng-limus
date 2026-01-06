@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jan 06, 2026 at 03:52 PM
+-- Generation Time: Jan 06, 2026 at 04:37 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.24
 
@@ -179,6 +179,7 @@ INSERT INTO `kategori_menu` (`id_kategori`, `nama_kategori`, `deskripsi`, `uruta
 
 CREATE TABLE `konsumen` (
   `id_konsumen` int(11) UNSIGNED NOT NULL,
+  `id_user` int(11) UNSIGNED DEFAULT NULL,
   `nama` varchar(100) NOT NULL,
   `no_hp` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
@@ -194,10 +195,10 @@ CREATE TABLE `konsumen` (
 -- Dumping data for table `konsumen`
 --
 
-INSERT INTO `konsumen` (`id_konsumen`, `nama`, `no_hp`, `email`, `alamat`, `tipe`, `poin`, `total_transaksi`, `created_at`, `updated_at`) VALUES
-(1, 'Pelanggan Umum', NULL, NULL, NULL, 'walk-in', 0, 0, '2025-12-13 15:13:45', NULL),
-(2, 'Budi Santoso', '081111222333', NULL, NULL, 'member', 150, 0, '2025-12-13 15:13:45', NULL),
-(3, 'Siti Rahayu', '082222333444', NULL, NULL, 'member', 85, 0, '2025-12-13 15:13:45', NULL);
+INSERT INTO `konsumen` (`id_konsumen`, `id_user`, `nama`, `no_hp`, `email`, `alamat`, `tipe`, `poin`, `total_transaksi`, `created_at`, `updated_at`) VALUES
+(1, NULL, 'Pelanggan Umum', NULL, NULL, NULL, 'walk-in', 0, 0, '2025-12-13 15:13:45', NULL),
+(2, NULL, 'Budi Santoso', '081111222333', NULL, NULL, 'member', 150, 0, '2025-12-13 15:13:45', NULL),
+(3, NULL, 'Siti Rahayu', '082222333444', NULL, NULL, 'member', 85, 0, '2025-12-13 15:13:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -337,6 +338,78 @@ INSERT INTO `penggajian` (`id_penggajian`, `id_karyawan`, `bulan`, `tahun`, `gaj
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `poin_history`
+--
+
+CREATE TABLE `poin_history` (
+  `id_history` int(11) UNSIGNED NOT NULL,
+  `id_konsumen` int(11) UNSIGNED NOT NULL,
+  `poin` int(11) NOT NULL COMMENT 'Positif = tambah, Negatif = kurang',
+  `saldo_sebelum` int(11) NOT NULL DEFAULT 0,
+  `saldo_sesudah` int(11) NOT NULL DEFAULT 0,
+  `tipe` enum('earn','redeem','adjust','bonus','expired') NOT NULL DEFAULT 'earn',
+  `referensi_id` int(11) UNSIGNED DEFAULT NULL COMMENT 'ID transaksi atau reward',
+  `referensi_tipe` varchar(50) DEFAULT NULL COMMENT 'transaksi, reward, manual',
+  `keterangan` varchar(255) DEFAULT NULL,
+  `created_by` int(11) UNSIGNED DEFAULT NULL COMMENT 'ID user yang melakukan (untuk adjust)',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rewards`
+--
+
+CREATE TABLE `rewards` (
+  `id_reward` int(11) UNSIGNED NOT NULL,
+  `nama_reward` varchar(100) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `poin_dibutuhkan` int(11) NOT NULL DEFAULT 0,
+  `tipe_reward` enum('diskon_nominal','diskon_persen','free_item','other') NOT NULL DEFAULT 'diskon_nominal',
+  `nilai_reward` decimal(12,2) NOT NULL DEFAULT 0.00 COMMENT 'Nominal diskon atau persen',
+  `id_menu` int(11) UNSIGNED DEFAULT NULL COMMENT 'Untuk tipe free_item',
+  `stok` int(11) DEFAULT NULL COMMENT 'NULL = unlimited',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `tanggal_mulai` date DEFAULT NULL,
+  `tanggal_selesai` date DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `rewards`
+--
+
+INSERT INTO `rewards` (`id_reward`, `nama_reward`, `deskripsi`, `poin_dibutuhkan`, `tipe_reward`, `nilai_reward`, `id_menu`, `stok`, `is_active`, `tanggal_mulai`, `tanggal_selesai`, `created_at`, `updated_at`) VALUES
+(1, 'Diskon Rp 5.000', 'Potongan harga Rp 5.000 untuk pembelian apapun', 50, 'diskon_nominal', '5000.00', NULL, NULL, 1, NULL, NULL, '2026-01-06 22:13:54', NULL),
+(2, 'Diskon Rp 10.000', 'Potongan harga Rp 10.000 untuk pembelian apapun', 100, 'diskon_nominal', '10000.00', NULL, NULL, 1, NULL, NULL, '2026-01-06 22:13:54', NULL),
+(3, 'Diskon Rp 25.000', 'Potongan harga Rp 25.000 untuk pembelian apapun', 200, 'diskon_nominal', '25000.00', NULL, NULL, 1, NULL, NULL, '2026-01-06 22:13:54', NULL),
+(4, 'Diskon 10%', 'Diskon 10% untuk total pembelian', 150, 'diskon_persen', '10.00', NULL, NULL, 1, NULL, NULL, '2026-01-06 22:13:54', NULL),
+(5, 'Gratis Es Teh Manis', 'Dapatkan 1 Es Teh Manis gratis', 30, 'free_item', '5000.00', NULL, NULL, 1, NULL, NULL, '2026-01-06 22:13:54', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reward_claims`
+--
+
+CREATE TABLE `reward_claims` (
+  `id_claim` int(11) UNSIGNED NOT NULL,
+  `id_konsumen` int(11) UNSIGNED NOT NULL,
+  `id_reward` int(11) UNSIGNED NOT NULL,
+  `poin_digunakan` int(11) NOT NULL,
+  `kode_klaim` varchar(20) NOT NULL,
+  `status` enum('active','used','expired') NOT NULL DEFAULT 'active',
+  `id_transaksi` int(11) UNSIGNED DEFAULT NULL COMMENT 'Transaksi dimana klaim digunakan',
+  `expired_at` datetime DEFAULT NULL,
+  `used_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `settings`
 --
 
@@ -366,7 +439,9 @@ INSERT INTO `settings` (`id_setting`, `setting_key`, `setting_value`, `setting_g
 (10, 'hari_kerja', '26', 'hr', 'Hari kerja per bulan', NULL),
 (11, 'tunjangan_hadir_min', '22', 'hr', 'Min hari untuk dapat tunjangan hadir', NULL),
 (12, 'potongan_per_hari', '50000', 'hr', 'Potongan per hari alpha', NULL),
-(13, 'potongan_terlambat', '25000', 'hr', 'Potongan per keterlambatan', NULL);
+(13, 'potongan_terlambat', '25000', 'hr', 'Potongan per keterlambatan', NULL),
+(14, 'poin_per_transaksi', '10000', 'poin', 'Nominal transaksi untuk mendapat 1 poin (Rp)', NULL),
+(15, 'poin_multiplier', '1', 'poin', 'Multiplier poin (1 = setiap 10k dapat 1 poin)', NULL);
 
 -- --------------------------------------------------------
 
@@ -559,7 +634,8 @@ ALTER TABLE `kategori_menu`
 --
 ALTER TABLE `konsumen`
   ADD PRIMARY KEY (`id_konsumen`),
-  ADD KEY `idx_hp` (`no_hp`);
+  ADD KEY `idx_hp` (`no_hp`),
+  ADD KEY `idx_user` (`id_user`);
 
 --
 -- Indexes for table `menu`
@@ -601,6 +677,33 @@ ALTER TABLE `penggajian`
   ADD PRIMARY KEY (`id_penggajian`),
   ADD UNIQUE KEY `uk_periode` (`id_karyawan`,`bulan`,`tahun`),
   ADD KEY `idx_periode` (`bulan`,`tahun`);
+
+--
+-- Indexes for table `poin_history`
+--
+ALTER TABLE `poin_history`
+  ADD PRIMARY KEY (`id_history`),
+  ADD KEY `idx_konsumen` (`id_konsumen`),
+  ADD KEY `idx_tipe` (`tipe`),
+  ADD KEY `idx_tanggal` (`created_at`);
+
+--
+-- Indexes for table `rewards`
+--
+ALTER TABLE `rewards`
+  ADD PRIMARY KEY (`id_reward`),
+  ADD KEY `idx_active` (`is_active`),
+  ADD KEY `idx_poin` (`poin_dibutuhkan`);
+
+--
+-- Indexes for table `reward_claims`
+--
+ALTER TABLE `reward_claims`
+  ADD PRIMARY KEY (`id_claim`),
+  ADD UNIQUE KEY `uk_kode` (`kode_klaim`),
+  ADD KEY `idx_konsumen` (`id_konsumen`),
+  ADD KEY `idx_reward` (`id_reward`),
+  ADD KEY `idx_status` (`status`);
 
 --
 -- Indexes for table `settings`
@@ -710,10 +813,28 @@ ALTER TABLE `penggajian`
   MODIFY `id_penggajian` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `poin_history`
+--
+ALTER TABLE `poin_history`
+  MODIFY `id_history` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `rewards`
+--
+ALTER TABLE `rewards`
+  MODIFY `id_reward` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `reward_claims`
+--
+ALTER TABLE `reward_claims`
+  MODIFY `id_claim` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id_setting` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_setting` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `supplier`
