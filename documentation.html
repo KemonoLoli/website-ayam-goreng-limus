@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Limus Pojok - System Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: #d35400;
+            font-size: 28px;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #d35400;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin: 30px 0 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 16px;
+            margin: 20px 0 10px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .badge-info {
+            background: #3498db;
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .alert-warning {
+            background: #fef5e7;
+            border-left: 4px solid #f39c12;
+        }
+
+        .alert-info {
+            background: #eaf4fc;
+            border-left: 4px solid #3498db;
+        }
+
+        ul,
+        ol {
+            margin: 10px 0 10px 25px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            width: 80px;
+        }
+
+        .toc {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .toc h3 {
+            margin-bottom: 10px;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            padding: 5px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            h2 {
+                page-break-before: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>🍗 Warung Limus Pojok</h1>
+        <p><strong>Restaurant Management System</strong></p>
+        <p>Complete Implementation Documentation</p>
+    </div>
+
+    <div class="toc">
+        <h3>📋 Daftar Isi</h3>
+        <ul>
+            <li>1. Ringkasan Sistem</li>
+            <li>2. Modul yang Diimplementasi</li>
+            <li>3. Struktur File</li>
+            <li>4. Database</li>
+            <li>5. Panduan Instalasi</li>
+            <li>6. Role-Based Access Control</li>
+            <li>7. Fitur Utama</li>
+            <li>8. URL Penting</li>
+        </ul>
+    </div>
+
+    <h2>1. Ringkasan Sistem</h2>
+    <p>Sistem manajemen operasional restoran berbasis web yang lengkap untuk <strong>"Warung Ayam Goreng Limus
+            Regency"</strong> menggunakan:</p>
+    <ul>
+        <li><strong>CodeIgniter 3.1.13</strong> - PHP MVC Framework</li>
+        <li><strong>MySQL 8.0</strong> - Database (Port 3307)</li>
+        <li><strong>Bootstrap CoreUI Free</strong> - Admin Dashboard Theme</li>
+    </ul>
+
+    <h2>2. Modul yang Diimplementasi</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Modul</th>
+                <th>Controller</th>
+                <th>Fitur</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Dashboard</td>
+                <td>Dashboard.php</td>
+                <td>KPIs, charts, alerts, quick actions</td>
+            </tr>
+            <tr>
+                <td>POS/Kasir</td>
+                <td>Pos.php</td>
+                <td>Menu grid, cart, checkout, receipt</td>
+            </tr>
+            <tr>
+                <td>User Management</td>
+                <td>User.php</td>
+                <td>RBAC, CRUD, status toggle</td>
+            </tr>
+            <tr>
+                <td>Karyawan</td>
+                <td>Karyawan.php</td>
+                <td>CRUD, user linking, salary</td>
+            </tr>
+            <tr>
+                <td>Menu</td>
+                <td>Menu.php</td>
+                <td>CRUD, image upload, promo pricing</td>
+            </tr>
+            <tr>
+                <td>Kategori</td>
+                <td>Kategori.php</td>
+                <td>Menu categories CRUD</td>
+            </tr>
+            <tr>
+                <td>Transaksi</td>
+                <td>Transaksi.php</td>
+                <td>History, detail, status update</td>
+            </tr>
+            <tr>
+                <td>Stock (Bahan)</td>
+                <td>Bahan.php</td>
+                <td>CRUD, quick adjustment</td>
+            </tr>
+            <tr>
+                <td>Inventaris</td>
+                <td>Inventaris.php</td>
+                <td>Movement tracking, adjustments</td>
+            </tr>
+            <tr>
+                <td>Pembelian</td>
+                <td>Pembelian.php</td>
+                <td>Create PO, receive, cancel</td>
+            </tr>
+            <tr>
+                <td>Supplier</td>
+                <td>Supplier.php</td>
+                <td>Vendor CRUD</td>
+            </tr>
+            <tr>
+                <td>Absensi</td>
+                <td>Absensi.php</td>
+                <td>Clock-in/out, break, recap</td>
+            </tr>
+            <tr>
+                <td>Penggajian</td>
+                <td>Penggajian.php</td>
+                <td>Generate, approve, pay, slip</td>
+            </tr>
+            <tr>
+                <td>Laporan</td>
+                <td>Laporan.php</td>
+                <td>Sales, stock, attendance, payroll</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. Struktur File</h2>
+    <h3>Controllers (application/controllers/Admin/)</h3>
+    <pre><code>Admin/
+├── Auth.php           # Login/logout
+├── Dashboard.php      # Main dashboard
+├── User.php           # User management
+├── Karyawan.php       # Employee management
+├── Menu.php           # Menu CRUD
+├── Kategori.php       # Category CRUD
+├── Pos.php            # Point of Sale
+├── Transaksi.php      # Transaction history
+├── Bahan.php          # Stock management
+├── Inventaris.php     # Inventory tracking
+├── Pembelian.php      # Purchase orders
+├── Supplier.php       # Supplier CRUD
+├── Absensi.php        # Attendance
+├── Penggajian.php     # Payroll
+└── Laporan.php        # Reports</code></pre>
+
+    <h3>Models (application/models/)</h3>
+    <pre><code>├── User_model.php
+├── Karyawan_model.php
+├── Menu_model.php
+├── Kategori_model.php
+├── Transaksi_model.php
+├── Bahan_model.php
+├── Inventaris_model.php
+├── Pembelian_model.php
+├── Supplier_model.php
+├── Konsumen_model.php
+├── Absensi_model.php
+└── Penggajian_model.php</code></pre>
+
+    <div class="page-break"></div>
+
+    <h2>4. Database</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>database_schema.sql</td>
+                <td>Schema utama dengan semua tabel</td>
+            </tr>
+            <tr>
+                <td>database_schema_additional.sql</td>
+                <td>Tabel Inventory, Purchase, Payroll</td>
+            </tr>
+            <tr>
+                <td>migration_script.sql</td>
+                <td>Migrasi data lama ke schema baru</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Panduan Instalasi</h2>
+    <h3>Step 1: Import Database</h3>
+    <pre><code>-- Jalankan di MySQL client (port 3307)
+SOURCE /path/to/database_schema.sql;
+SOURCE /path/to/database_schema_additional.sql;
+
+-- Optional: Jika migrasi dari data lama
+SOURCE /path/to/migration_script.sql;</code></pre>
+
+    <h3>Step 2: Start XAMPP</h3>
+    <ul>
+        <li>Start <strong>Apache</strong></li>
+        <li>Start <strong>MySQL</strong> (port 3307)</li>
+    </ul>
+
+    <h3>Step 3: Akses Admin Panel</h3>
+    <p><strong>URL:</strong> <code>http://localhost/prototype_project/admin/login</code></p>
+    <p><strong>Default Login:</strong></p>
+    <ul>
+        <li>Username: <code>master</code></li>
+        <li>Password: <code>master123</code></li>
+    </ul>
+    <div class="alert alert-warning">
+        <strong>⚠️ Peringatan:</strong> Segera ganti password master setelah login pertama!
+    </div>
+
+    <h2>6. Role-Based Access Control (RBAC)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Akses</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-success">Master</span></td>
+                <td>Full access to everything</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Owner</span></td>
+                <td>Full access (cannot manage master)</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Admin</span></td>
+                <td>Operations, reports, management</td>
+            </tr>
+            <tr>
+                <td>Kasir</td>
+                <td>POS, transactions, customers</td>
+            </tr>
+            <tr>
+                <td>Koki</td>
+                <td>Kitchen display, orders</td>
+            </tr>
+            <tr>
+                <td>Waiter</td>
+                <td>POS, table orders</td>
+            </tr>
+            <tr>
+                <td>Driver</td>
+                <td>Delivery orders</td>
+            </tr>
+            <tr>
+                <td>Member</td>
+                <td>Customer loyalty (frontend)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>7. Fitur Utama</h2>
+
+    <h3>Point of Sale (POS)</h3>
+    <ul>
+        <li>Category-filtered menu grid</li>
+        <li>Real-time cart management</li>
+        <li>Order types: Dine-in, Take Away, Delivery</li>
+        <li>Payment: Cash, QRIS, E-Wallet, Transfer</li>
+        <li>Auto-calculate change</li>
+        <li>Thermal receipt printing (80mm)</li>
+    </ul>
+
+    <h3>Inventory & Stock</h3>
+    <ul>
+        <li>Stock tracking with low-stock alerts</li>
+        <li>Movement history (in/out)</li>
+        <li>Quick adjustment modal</li>
+        <li>Auto-update on purchase receive</li>
+    </ul>
+
+    <h3>Payroll</h3>
+    <ul>
+        <li>Auto-generate based on attendance</li>
+        <li>Calculate allowances & deductions</li>
+        <li>Workflow: Draft → Approved → Paid</li>
+        <li>Printable salary slips</li>
+    </ul>
+
+    <h3>Reports</h3>
+    <ul>
+        <li><strong>Sales:</strong> Daily/monthly, top products, charts</li>
+        <li><strong>Stock:</strong> Current levels, low stock, value</li>
+        <li><strong>Attendance:</strong> Monthly recap per employee</li>
+        <li><strong>Payroll:</strong> Monthly summary, totals</li>
+        <li><strong>CSV Export</strong> for sales data</li>
+    </ul>
+
+    <h2>8. URL Penting</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Halaman</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Login</td>
+                <td>/admin/login</td>
+            </tr>
+            <tr>
+                <td>Dashboard</td>
+                <td>/admin/dashboard</td>
+            </tr>
+            <tr>
+                <td>POS/Kasir</td>
+                <td>/admin/pos</td>
+            </tr>
+            <tr>
+                <td>Menu</td>
+                <td>/admin/menu</td>
+            </tr>
+            <tr>
+                <td>Karyawan</td>
+                <td>/admin/karyawan</td>
+            </tr>
+            <tr>
+                <td>Transaksi</td>
+                <td>/admin/transaksi</td>
+            </tr>
+            <tr>
+                <td>Stok/Bahan</td>
+                <td>/admin/bahan</td>
+            </tr>
+            <tr>
+                <td>Inventaris</td>
+                <td>/admin/inventaris</td>
+            </tr>
+            <tr>
+                <td>Pembelian</td>
+                <td>/admin/pembelian</td>
+            </tr>
+            <tr>
+                <td>Absensi</td>
+                <td>/admin/absensi</td>
+            </tr>
+            <tr>
+                <td>Penggajian</td>
+                <td>/admin/penggajian</td>
+            </tr>
+            <tr>
+                <td>Laporan</td>
+                <td>/admin/laporan</td>
+            </tr>
+            <tr>
+                <td>User</td>
+                <td>/admin/user</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>📄 Warung Limus Pojok - Restaurant Management System Documentation</p>
+        <p>Generated: December 10, 2025</p>
+    </div>
+
+    <div class="no-print"
+        style="text-align: center; margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 5px;">
+        <p><strong>💡 Untuk menyimpan sebagai PDF:</strong></p>
+        <p>Tekan <kbd>Ctrl</kbd> + <kbd>P</kbd> → Pilih "Save as PDF" sebagai printer</p>
+        <button onclick="window.print()"
+            style="margin-top: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer;">
+            🖨️ Print / Save as PDF
+        </button>
+    </div>
+</body>
+
+</html>
